@@ -3,8 +3,8 @@ import os.path
 from dataclasses import dataclass
 from typing import List
 
+import tweepy as tweepy
 from GetOldTweets3.manager import TweetCriteria, TweetManager
-
 
 TWEETS_DUMP_FILE_PATH = './tweets.csv'
 
@@ -60,6 +60,40 @@ def dump_tweets_to_file(tweets_for_dump: List[Tweet]):
 
 def filter_tweets_by_text(tweets_to_filter: List[Tweet], text_to_filter: str) -> List[Tweet]:
     return [tweet for tweet in tweets_to_filter if text_to_filter in tweet.text]
+
+
+@dataclass
+class TwitterAPISecrets:
+    api_key: str
+    api_secret: str
+    access_token: str
+    access_token_secret: str
+
+
+def read_api_secrets_from_file(file_name: str = 'secrets.txt') -> TwitterAPISecrets:
+    api_key_line_index = 0
+    api_secret_line_index = 1
+    access_token_line_index = 2
+    access_token_secret_line_index = 3
+
+    with open(file_name, mode='r') as secrets_file:
+        lines = [line for line in secrets_file]
+
+        api_key = extract_secret_value(lines[api_key_line_index])
+        api_secret = extract_secret_value(lines[api_secret_line_index])
+        access_token = extract_secret_value(lines[access_token_line_index])
+        access_token_secret = extract_secret_value(lines[access_token_secret_line_index])
+
+        return TwitterAPISecrets(
+            api_key,
+            api_secret,
+            access_token,
+            access_token_secret
+        )
+
+
+def extract_secret_value(line: str) -> str:
+    return line.split('=')[1].strip()
 
 
 if __name__ == '__main__':
