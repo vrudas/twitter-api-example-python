@@ -117,3 +117,13 @@ if __name__ == '__main__':
 
     filtered_tweets = filter_tweets_by_text(user_tweets, 'text to filter')
     print('filtered_tweets_count =', len(filtered_tweets))
+
+    twitter_api_secrets = read_api_secrets_from_file()
+
+    auth = create_authentication_to_api(twitter_api_secrets)
+
+    api = tweepy.API(auth)
+
+    user = api.get_user('Twitter')
+
+    print(user.screen_name)
