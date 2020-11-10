@@ -111,6 +111,13 @@ def create_authentication_to_api(secrets: TwitterAPISecrets) -> OAuthHandler:
     return auth_handler
 
 
+def delete_tweets(tweets, ids_for_deletion):
+    for tweet in tweets:
+        if tweet.id_str in ids_for_deletion:
+            api.destroy_status(tweet.id)
+            print('Deleted tweet: ', tweet.id_str, ' ', tweet.text)
+
+
 if __name__ == '__main__':
     user_tweets = init_user_tweets('twitter_username', 200)
     print('user_tweets_count =', len(user_tweets))
@@ -118,12 +125,14 @@ if __name__ == '__main__':
     filtered_tweets = filter_tweets_by_text(user_tweets, 'text to filter')
     print('filtered_tweets_count =', len(filtered_tweets))
 
+    tweet_ids_for_deletion = list(map(lambda tweet: tweet.tweet_id, filtered_tweets))
+
     twitter_api_secrets = read_api_secrets_from_file()
 
     auth = create_authentication_to_api(twitter_api_secrets)
 
     api = tweepy.API(auth)
 
-    user = api.get_user('Twitter')
+    timeline_tweets = tweepy.Cursor(api.user_timeline).items()
 
-    print(user.screen_name)
+    delete_tweets(timeline_tweets, tweet_ids_for_deletion)
