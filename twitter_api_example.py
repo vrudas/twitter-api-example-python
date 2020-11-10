@@ -5,6 +5,7 @@ from typing import List
 
 import tweepy as tweepy
 from GetOldTweets3.manager import TweetCriteria, TweetManager
+from tweepy import OAuthHandler
 
 TWEETS_DUMP_FILE_PATH = './tweets.csv'
 
@@ -94,6 +95,20 @@ def read_api_secrets_from_file(file_name: str = 'secrets.txt') -> TwitterAPISecr
 
 def extract_secret_value(line: str) -> str:
     return line.split('=')[1].strip()
+
+
+def create_authentication_to_api(secrets: TwitterAPISecrets) -> OAuthHandler:
+    auth_handler = tweepy.OAuthHandler(
+        secrets.api_key,
+        secrets.api_secret
+    )
+
+    auth_handler.set_access_token(
+        secrets.access_token,
+        secrets.access_token_secret
+    )
+
+    return auth_handler
 
 
 if __name__ == '__main__':
