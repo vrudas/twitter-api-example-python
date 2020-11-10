@@ -100,5 +100,5 @@ if __name__ == '__main__':
     user_tweets = init_user_tweets('twitter_username', 200)
     print('user_tweets_count =', len(user_tweets))
 
-    imdb_tweets = filter_tweets_by_text(user_tweets, 'text to filter')
-    print('imdb_tweets_count =', len(imdb_tweets))
+    filtered_tweets = filter_tweets_by_text(user_tweets, 'text to filter')
+    print('filtered_tweets_count =', len(filtered_tweets))
